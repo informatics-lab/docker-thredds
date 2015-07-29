@@ -1,13 +1,12 @@
 FROM tomcat:7-jre8
 MAINTAINER Jacob Tomlinson <jacob.tomlinson@informaticslab.co.uk>
 
-RUN apt-get update \
- && apt-get install wget
+# Download Thredds
+RUN wget ftp://ftp.unidata.ucar.edu/pub/thredds/4.3/4.3.23/thredds.war -O ${CATALINA_HOME}/webapps/thredds.war
 
-RUN wget ftp://ftp.unidata.ucar.edu/pub/thredds/4.6/current/thredds.war -O ${CATALINA_HOME}/webapps/thredds.war
-
+# Start and stop tomcat once to expand the Thredds war file
 RUN catalina.sh start \
- && sleep 15 \
+ && while ! grep "INFO: Server startup in" logs/catalina* > /dev/null; do echo "Waiting for Tomcat..."; sleep 5; done \
  && catalina.sh stop
 
 EXPOSE 8080
