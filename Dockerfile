@@ -10,6 +10,10 @@ RUN catalina.sh start \
  && catalina.sh stop \
  && rm ${CATALINA_HOME}/webapps/thredds.war
 
+# Move the Tomcat Admin application to a different name and set Thredds as the default
+RUN mv ${CATALINA_HOME}/webapps/ROOT ${CATALINA_HOME}/webapps/TCAdmin
+RUN ln -s ${CATALINA_HOME}/webapps/thredds ${CATALINA_HOME}/webapps/ROOT
+
 EXPOSE 8080
 
 CMD [ "catalina.sh", "run" ]
